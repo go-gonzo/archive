@@ -59,6 +59,7 @@ func Untar(opt Options) gonzo.Stage {
 					return nil
 				}
 
+				context.WithValue(ctx, "archive", file.FileInfo().Name()).Debug("Untaring")
 				tr := tar.NewReader(file)
 				defer file.Close()
 
@@ -77,9 +78,8 @@ func Untar(opt Options) gonzo.Stage {
 					if pluck && !match.Any(name, opt.Pluck...) {
 						continue
 					}
-					ctx = context.WithValue(ctx, "file", name)
-					ctx.Info("Untaring")
-					//counter.Set(i+1, f.Name)
+
+					context.WithValue(ctx, "file", name).Debug("Untaring")
 
 					content := new(bytes.Buffer)
 					n, err := content.ReadFrom(tr)
